@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Todo App Login/Register</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.1/examples/sign-in/">
+
+  <!-- Bootstrap core CSS -->
+  <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="styles/login.css" rel="stylesheet">
+</head>
+
+<body class="text-center">
+  <form class="form-signin" id="form" v-on:submit.prevent="loginMode ? login(credentials) : register(credentials)">
+    <img class="mb-4" src="../../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Please sign {{loginMode ? 'in' : 'up'}}</h1>
+    <label for="inputEmail" class="sr-only">Username</label>
+    <input type="text" v-model="credentials.username" id="inputEmail" class="form-control" placeholder="Username" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" v-model="credentials.password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me" v-model="credentials.remember"> Remember me
+      </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{loginMode ? 'login' : 'register'}}</button>
+    <a class="btn text-primary btn-block" v-on:click="toggleMode()">{{loginMode ? 'register' : 'login' }}</a>
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+  </form>
+
+  <script src="libs/jquery/jquery-3.3.1.min.js"></script>
+  <script src="libs/vue/vue.min.js"></script>
+  <script>
+    const form = new Vue({
+      el: '#form',
+      data: {
+        loginMode:true,
+        credentials: {
+          username: '',
+          password: '',
+          remember:false
+        }
+      },
+      methods: {
+        register: function (credentials) {
+          var f=this;
+          $.ajax({
+            url: '/auth/register',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(credentials)
+          }).done(function (res) {
+            f.saveUserData(res,f.credentials.remember);
+            location.href='/';
+          }).fail(function (err) {
+            console.log(err);
+            alert(err.msg);
+          })
+        },
+        login: function(credentials){
+          var f =this;
+          $.ajax({
+            url: '/auth/login',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(credentials)
+          }).done(function (res) {
+            f.saveUserData(res,f.credentials.remember);
+            location.href='/';
+          }).fail(function (err) {
+            console.log(err);
+            alert(err.msg);
+          })
+        },
+        saveUserData: function(userInfo,permanent){
+          if(permanent)
+          localStorage.setItem('userInfo',JSON.stringify(userInfo));
+          else
+          sessionStorage.setItem('userInfo',JSON.stringify(userInfo));
+        },
+        toggleMode: function(){
+          this.loginMode =!this.loginMode;
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>
