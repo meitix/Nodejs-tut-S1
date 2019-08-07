@@ -1,0 +1,16 @@
+{
+  "name": "my-first-app",
+  "version": "1.0.0",
+  "description": "this is the first app",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soheil najafi",
+  "license": "ISC"
+}
