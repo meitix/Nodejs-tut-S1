@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>index</title>
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>This is node.js TODO app</h1>
+            <p>you can manage your daily tasks by this app</p>
+        </header>
+        <div class="row">
+            <div class="col">
+                <form onsubmit="createTodo(); return false;"autocomplete="off">
+                    <div class="form-group">
+                        <label for="new-todo">Add Todo</label>
+                        <input type="text" class="form-control" id="new-todo" placeholder="What are you going todo?">
+                    </div>
+                    <button class="btn btn-success">Add</button>
+                </form>
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <table class="table table-striped" id="todo-table">
+                    <tbody>
+                        <tr v-for='todo in todos'>
+                            <td>{{todo.text}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="libs/jquery/jquery-3.3.1.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="libs/vue/vue.min.js"></script>
+
+    <script>
+
+       var model=new Vue({
+           el:'#todo-table',
+           data:{
+               todos:[{text:'learning english'},{text:'learning node.js'}]
+           }
+       });
+
+       function createTodo(){
+           var newTodo = $('#new-todo').val();
+           //validation
+           if(!newTodo){
+               alert('you should a text as a new todo');
+               return;
+           }
+           //add a new todo to todo list
+           model.todos.push({text:newTodo});
+           //clear new todo text box
+           $('#new-todo').val('');
+       }
+        
+
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
