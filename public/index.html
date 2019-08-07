@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>index todo</title>
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>this is the app todo</h1>
+            <p>you can manage your daily tasks by this app</p>
+            <!--<img src="./image/image.jpg">-->
+        </header>
+        <div class="row">
+            <div class="col">
+                <form v-on:submit.prevent="submitForm" autocomplete="off" id="form">
+                    <div class="form-group">
+                        <label for="new-todo">{{editMode ? 'update todo':'add todo'}}</label>
+                        <input type="text" class="form-control" id="new-todo" v-model="newTodo.text" placeholder="What are you going todo?">
+                    </div>
+                    <button class="btn btn-success">{{editMode ? 'update':'add'}}</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <table class="table table-striped" id="todo-table">
+                    <tbody>
+                        <tr v-for='todo in todos'>
+                            <td>{{todo.text}}</td>
+                            <td width="10"> <a v-on:click="beginUpdating(todo)" class="btn text-warning btn-sm">Edit</a>
+                            </td>
+                            <td width='10'><a v-on:click="deleteTodo(todo)" class="btn text-danger btn-sm">delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- script -->
+    <script src="libs/jquery/jquery-3.3.1.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="libs/vue/vue.min.js"></script>
+    <script>
+
+        var model = new Vue({
+            el: '#todo-table',
+            data: {
+                todos: []
+            },
+            methods: {
+                beginUpdating: function (todo) {
+                    form.editMode = true;
+                    form.oldTodo = todo;
+                    form.newTodo.text = todo.text;
+                }
+            }
+        });
+        var form = new Vue({
+            el: '#form',
+            data: {
+                editMode: false,
+                oldTodo: undefined,
+                newTodo: { text: '' }
+            },
+            methods: {
+                submitForm: function () {
+                    if (this.editMode) {
+                        updateTodo(this.oldTodo, this.newTodo);
+                    } else {
+                        createTodo();
+                    }
+                }
+            }
+        });
+
+        function createTodo() {
+            var newTodo = $('#new-todo').val();
+            if (!newTodo) {
+                alert('you should a text as a new todo');
+                return;
+            }
+            $.post('/todos', { text: newTodo }, function (data) {
+                model.todos.push(data); 
+            }).fail(function (err) {
+                console.log(err);
+                alert('operation failed');
+            })
+            $('#new-todo').val('');
+        }
+
+        function getTodos() {
+            $.get('/todos', function (data) {
+                model.todos = data;
+            })
+        }
+        getTodos();
+
+        function deleteTodo(todo) {
+            $.ajax({
+                url: '/todos',
+                contentType: 'application/json',
+                data: JSON.stringify(todo),
+                method: 'delete'
+            }).done(function () {
+                getTodos();
+            }).fail(function (err) {
+                console.log(err);
+                alert('operation failed');
+            })
+        }
+
+        function updateTodo(oldTodo, newTodo) {
+            $.ajax({
+                url: '/todos',
+                contentType: 'application/json',
+                data: JSON.stringify({ oldTodo, newTodo }),
+                method: 'put'
+            }).done(function () {
+                form.editMode = false;
+                form.newTodo = { text: '' };
+                getTodos();
+            }).fail(function (err) {
+                console.log(err);
+                alert('operation failed');
+            })
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
