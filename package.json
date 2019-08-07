@@ -1,0 +1,21 @@
+{
+  "name": "my-first-app",
+  "version": "1.0.0",
+  "description": "this is the first app",
+  "main": "app.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.11",
+    "mongodb": "^3.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soheil najafi",
+  "license": "ISC"
+}
